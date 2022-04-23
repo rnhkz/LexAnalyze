@@ -1,20 +1,20 @@
 public class Runner {
     public static void main(String[] args) {
         Runner r = new Runner();
-        if(args.length == 1)
-            r.begin(args[0]);
-        else
-            r.begin("test2.prog");
+        if(args.length == 0)
+            args = new String[] {"helloworld.prog", "test2.prog", "test3.prog", "test4.prog"};
+        r.begin(args);
     }
 
-    public void begin(String fileName){
-        lexer lex = new lexer();
-        lex.printAllTokens();
-        lex.testStringPreprocessing();
-
-        lex = new lexer(fileName);
-        lex.showInput();
-        lex.lexFull();
+    public void begin(String[] args){
+        parser parse;
+        for(String fileName : args) {
+            parse = new parser(fileName);
+            System.out.printf("Input %s:\t", fileName);
+            if(parse.parseProg())
+                System.out.println("Program is Correct.");
+        }
+        System.out.print("end");
     }
 }
 

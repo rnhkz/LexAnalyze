@@ -1,15 +1,19 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class lexer extends tokens {
+    int lineNum;
     String input;
 
     lexer(){
+        lineNum = 1;
         input = "";
     }
 
     lexer(String fileName){
+        lineNum = 1;
         try {
             File f = new File(fileName);
             Scanner scan = new Scanner(f);
@@ -25,30 +29,6 @@ public class lexer extends tokens {
             e.printStackTrace();
         }
    }
-
-   public void showInput(){
-        System.out.print(input);
-   }
-
-    void printAllTokens(){
-        System.out.println("=====PrintAllTokens=====");
-        input = "+ - * / % > >= < <= = != ( ) _a -5 \"Hello World!\" == print ;";
-        while(input.length() != 0){
-            lexeme test = lex();
-            test.print();
-        }
-        System.out.println("========================");
-    }
-
-    void testStringPreprocessing(){
-        System.out.println("=====StringTest=====");
-        input = "\"\\test\\ntest\\ttest\"";
-        while(input.length() != 0){
-            lexeme test = lex();
-            test.print();
-        }
-        System.out.println("====================");
-    }
 
     lexeme lexInt(){
         int x = 1;
@@ -95,7 +75,7 @@ public class lexer extends tokens {
 
     lexeme lexIDorKeyword(){
         int x=0;
-        while(input.charAt(x)!=' '&& input.charAt(x) !=';' && input.charAt(x) !='\n'){
+        while(input.charAt(x) == '_'||Character.isAlphabetic(input.charAt(x))||Character.isDigit(input.charAt(x))){
             x++;
         }
         if(input.charAt(x-1)==';'||input.charAt(x-1)==')')
@@ -123,15 +103,19 @@ public class lexer extends tokens {
     }
 
     public lexeme lex(){
+        if (input.isEmpty()){
+            return new lexeme(Tokens.END_OF_INPUT, "");
+        }
         while(input.charAt(0) == ' ' || input.charAt(0) == '\n'){
+            if(input.charAt(0) == '\n'){
+                lineNum++;
+            }
             input = input.substring(1);
         }
         switch(input.charAt(0)){
             case '+':
                 return lexSymbol(Tokens.PLUS);
             case '-':
-                if (Character.isDigit(input.charAt(1)))
-                    return lexInt();
                 return lexSymbol(Tokens.MINUS);
             case '*':
                 return lexSymbol(Tokens.MULT);
@@ -176,17 +160,45 @@ public class lexer extends tokens {
         return new lexeme(Tokens.ERROR, input);
     }
 
+    public void xel(lexeme toPushBack){
+        input = toPushBack.getData() + input;
+    } //Pushes a parsed lexeme back into the front of the input.
+
+    public int getLineNum(){
+        return lineNum;
+    }
+    /**==================TEST FUNCTIONS===================**/
+    public void showInput(){
+        System.out.print(input);
+    }
+
+    void printAllTokens(){
+        System.out.println("=====PrintAllTokens=====");
+        input = "+ - * / % > >= < <= = != ( ) _a -5 \"Hello World!\" == print ;";
+        while(input.length() != 0){
+            lexeme test = lex();
+            test.print();
+        }
+        System.out.println("========================");
+    }
+
+    void testStringPreprocessing(){
+        System.out.println("=====StringTest=====");
+        input = "\"\\test\\ntest\\ttest\"";
+        while(input.length() != 0){
+            lexeme test = lex();
+            test.print();
+        }
+        System.out.println("====================");
+    }
+
     public void lexFull(){
+        ArrayList<lexeme> lexemes = new ArrayList<>();
         while(input.length() > 0)
             while(input.length() != 0){
                 lexeme test = lex();
+                lexemes.add(test);
                 test.print();
             }
-    }
-    //Test
-    public static void main(String[] args) {
-        lexer lex = new lexer();
-        lex.printAllTokens();
-        lex.testStringPreprocessing();
     }
 }

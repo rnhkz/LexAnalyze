@@ -22,5 +22,5 @@ public class tokens {
         KEYWORD,
         ERROR
     }
-    public static String[] Keywords = {"print", "get", "if", "while", "for", "do", "end", "and", "or", "not"};
+    public static String[] Keywords = {"print", "get", "if", "while", "for", "do", "end", "and", "or", "not", "then", "else"};
 }
