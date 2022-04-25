@@ -19,7 +19,9 @@ public class lexer extends tokens {
             Scanner scan = new Scanner(f);
             StringBuilder s = new StringBuilder();
             while(scan.hasNextLine()){
-                s.append(scan.nextLine()).append("\n");
+                String temp = scan.nextLine();
+                if(!temp.startsWith("//"))
+                    s.append(temp).append("\n");
             }
             input = s.substring(0,s.length()-1);
             scan.close();
@@ -73,7 +75,7 @@ public class lexer extends tokens {
         return new lexeme(Tokens.STRING, s.toString());
     }
 
-    lexeme lexIDorKeyword(){
+    lexeme lexIDorKeywordorBoolean(){
         int x=0;
         while(input.charAt(x) == '_'||Character.isAlphabetic(input.charAt(x))||Character.isDigit(input.charAt(x))){
             x++;
@@ -85,6 +87,8 @@ public class lexer extends tokens {
         for(String keyword : Keywords)
         if(s.equals(keyword))
             return new lexeme(Tokens.KEYWORD, s);
+        if(s.equals("true") || s.equals("false"))
+            return new lexeme(Tokens.BOOLEAN, s);
         if (s.length()==1){
             return new lexeme(Tokens.ID, s);
         }
@@ -156,7 +160,7 @@ public class lexer extends tokens {
         if(Character.isDigit(input.charAt(0)))
             return lexInt();
         if(input.charAt(0) == '_'||Character.isAlphabetic(input.charAt(0)))
-            return lexIDorKeyword();
+            return lexIDorKeywordorBoolean();
         return new lexeme(Tokens.ERROR, input);
     }
 

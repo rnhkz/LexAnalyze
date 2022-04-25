@@ -2,7 +2,7 @@ public class Runner {
     public static void main(String[] args) {
         Runner r = new Runner();
         if(args.length == 0)
-            args = new String[] {"helloworld.prog", "test2.prog", "test3.prog", "test4.prog"};
+            args = new String[] {"helloworld.prog", "test2.prog", "test3.prog", "test4.prog", "test5.prog"};
         r.begin(args);
     }
 

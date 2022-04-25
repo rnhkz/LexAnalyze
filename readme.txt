@@ -2,6 +2,11 @@
 //alb190010
 //CS4337.501
 
+UPDATE Part2(Parser).1:
+    -Added for loops
+    -Added boolean data type
+    -Added comments
+
 1. What does this do?
     Simulates a lexer conforming to an attributed grammar.
 
@@ -29,7 +34,7 @@
             If incorrect
                 "Input test4.prog:	Error line 21: End of line ";" expected. {END_OF_INPUT, }"
 
-        The program can execute with no arguments. It will default to checking the four test programs provided (helloworld, test2-4).
+        The program can execute with no arguments. It will default to checking all the test programs provided (helloworld, test2-5).
 
             >java Runner
 

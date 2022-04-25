@@ -15,6 +15,17 @@ public class parser extends tokens{
         return false;
     }
 
+    private boolean parseAssign(){
+        if(currentLexeme.getToken() == Tokens.ID){
+            lex();
+            if(currentLexeme.getToken() == Tokens.EQUAL){
+                lex();
+                return parseExpr();
+            }
+        }
+        return false;
+    }
+
     private boolean parseExprB(){
         if(currentLexeme.getToken() == Tokens.KEYWORD) {
             if (currentLexeme.getData().equals("and") || currentLexeme.getData().equals("or")) {
@@ -105,7 +116,8 @@ public class parser extends tokens{
                     return error("Missing end parenthesis");
             }
         }
-        return currentLexeme.getToken() == Tokens.ID || currentLexeme.getToken() == Tokens.INT;
+        return currentLexeme.getToken() == Tokens.ID || currentLexeme.getToken() == Tokens.INT ||
+                currentLexeme.getToken() == Tokens.BOOLEAN;
     }
 
     private boolean parseIf(){
@@ -150,8 +162,44 @@ public class parser extends tokens{
                 else
                     return error("Expected \"end\"");
             }
+            return error("Expected expression after \"do\"");
         }
-        return error("Expected expression after \"while\"");
+        else
+            return error("Expected expression after \"while\"");
+    }
+
+    private boolean parseFor(){
+        lex();
+        if(parseAssign()) {
+            lex();
+            if(currentLexeme.getToken() == Tokens.END_OF_LINE) {
+                lex();
+                if (parseExpr()) {
+                    lex();
+                    if (currentLexeme.getToken() == Tokens.END_OF_LINE) {
+                        lex();
+                        if (parseAssign()) {
+                            lex();
+                            if (currentLexeme.getToken() == Tokens.END_OF_LINE) {
+                                lex();
+                                if (currentLexeme.getToken() == Tokens.KEYWORD && currentLexeme.getData().equals("do")) {
+                                    lex();
+                                    if (parseProg()) {
+                                        lex();
+                                        return currentLexeme.getToken() == Tokens.KEYWORD && currentLexeme.getData().equals("end");
+                                    } else
+                                        return error("Expected \"end\"");
+                                }
+                                return error("Expected expression after \"do\"");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else
+            return error("Expected assignment after \"for\"");
+        return false;
     }
 
     private boolean parseCommand(){
@@ -182,6 +230,8 @@ public class parser extends tokens{
                             return parseIf();
                         case "while":
                             return parseWhile();
+                        case "for":
+                            return parseFor();
                     }
             }
         else
@@ -193,7 +243,6 @@ public class parser extends tokens{
         if(parseCommand()){
             lex();
             if(currentLexeme.getToken() == Tokens.END_OF_LINE){
-                //System.out.println("Eol");
                 lex();
                 if(currentLexeme.getToken() == Tokens.END_OF_INPUT)
                     return true;
@@ -212,7 +261,6 @@ public class parser extends tokens{
 
     private void lex(){
         currentLexeme = _lexer.lex();
-        //currentLexeme.print();
     }
 
     boolean error(String msg){

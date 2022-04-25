@@ -16,6 +16,7 @@ public class tokens {
         ID,
         INT,
         STRING,
+        BOOLEAN,
         IS_EQUAL_TO,
         END_OF_LINE,
         END_OF_INPUT,

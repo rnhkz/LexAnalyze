@@ -1,0 +1,16 @@
+//this is a comment
+//this is a for loop
+get x;
+for x = 0; x < 10; x=x+1;
+do
+    print "hello";
+end;
+
+//this is boolean logic
+y = true;
+if y
+then
+    print " it is true";
+else
+    print "it is false";
+end;
